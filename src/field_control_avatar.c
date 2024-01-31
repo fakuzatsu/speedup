@@ -121,7 +121,15 @@ void FieldGetPlayerInput(struct FieldInput *input, u16 newKeys, u16 heldKeys)
             input->checkStandardWildEncounter = TRUE;
     }
 
-    if (heldKeys & DPAD_UP)
+    if (heldKeys & DPAD_UP & DPAD_LEFT)
+        input->dpadDirection = DIR_NORTHWEST;
+    else if (heldKeys & DPAD_UP & DPAD_RIGHT)
+        input->dpadDirection = DIR_NORTHEAST;
+    else if (heldKeys & DPAD_DOWN & DPAD_LEFT)
+        input->dpadDirection = DIR_SOUTHWEST;
+    else if (heldKeys & DPAD_DOWN & DPAD_RIGHT)
+        input->dpadDirection = DIR_SOUTHEAST;
+    else if (heldKeys & DPAD_UP)
         input->dpadDirection = DIR_NORTH;
     else if (heldKeys & DPAD_DOWN)
         input->dpadDirection = DIR_SOUTH;

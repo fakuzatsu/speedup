@@ -912,6 +912,11 @@ const u8 gWalkSlowMovementActions[] = {
     MOVEMENT_ACTION_WALK_SLOW_UP,
     MOVEMENT_ACTION_WALK_SLOW_LEFT,
     MOVEMENT_ACTION_WALK_SLOW_RIGHT,
+    MOVEMENT_ACTION_WALK_SLOW_DIAGONAL_DOWN_LEFT,
+    MOVEMENT_ACTION_WALK_SLOW_DIAGONAL_DOWN_RIGHT,
+    MOVEMENT_ACTION_WALK_SLOW_DIAGONAL_UP_LEFT,
+    MOVEMENT_ACTION_WALK_SLOW_DIAGONAL_UP_RIGHT
+
 };
 const u8 gWalkNormalMovementActions[] = {
     MOVEMENT_ACTION_WALK_NORMAL_DOWN,
@@ -919,6 +924,10 @@ const u8 gWalkNormalMovementActions[] = {
     MOVEMENT_ACTION_WALK_NORMAL_UP,
     MOVEMENT_ACTION_WALK_NORMAL_LEFT,
     MOVEMENT_ACTION_WALK_NORMAL_RIGHT,
+    MOVEMENT_ACTION_WALK_NORMAL_DIAGONAL_DOWN_LEFT,
+    MOVEMENT_ACTION_WALK_NORMAL_DIAGONAL_DOWN_RIGHT,
+    MOVEMENT_ACTION_WALK_NORMAL_DIAGONAL_UP_LEFT,
+    MOVEMENT_ACTION_WALK_NORMAL_DIAGONAL_UP_RIGHT
 };
 const u8 gWalkFastMovementActions[] = {
     MOVEMENT_ACTION_WALK_FAST_DOWN,
@@ -4939,7 +4948,7 @@ u8 name(u32 idx)\
     u8 animIds[sizeof(table)];\
     direction = idx;\
     memcpy(animIds, (table), sizeof(table));\
-    if (direction > DIR_EAST) direction = 0;\
+    if (direction > DIR_NORTHEAST) direction = 0;\
     return animIds[direction];\
 }
 

@@ -1150,6 +1150,22 @@ u8 player_get_pos_including_state_based_drift(s16 *x, s16 *y)
         case MOVEMENT_ACTION_PLAYER_RUN_RIGHT:
             (*x)++;
             return TRUE;
+        case MOVEMENT_ACTION_WALK_NORMAL_DIAGONAL_UP_LEFT:
+            (*y)--;
+            (*x)--;
+            return TRUE;
+        case MOVEMENT_ACTION_WALK_NORMAL_DIAGONAL_UP_RIGHT:
+            (*y)--;
+            (*x)++;
+            return TRUE;
+        case MOVEMENT_ACTION_WALK_NORMAL_DIAGONAL_DOWN_LEFT:
+            (*y)++;
+            (*x)--;
+            return TRUE;
+        case MOVEMENT_ACTION_WALK_NORMAL_DIAGONAL_DOWN_RIGHT:
+            (*y)++;
+            (*x)++;
+            return TRUE;
         }
     }
 
