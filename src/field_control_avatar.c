@@ -37,6 +37,8 @@
 
 static EWRAM_DATA u8 sWildEncounterImmunitySteps = 0;
 static EWRAM_DATA u16 sPrevMetatileBehavior = 0;
+static EWRAM_DATA u8 sCurrentDirection = 0;
+static EWRAM_DATA u8 sPreviousDirection = 0;
 
 u8 gSelectedObjectEvent;
 
@@ -70,6 +72,13 @@ static void UpdateFriendshipStepCounter(void);
 static bool8 UpdatePoisonStepCounter(void);
 static void GetInFrontOfPlayerPositionNonDiagonal(struct MapPosition *);
 
+static u8 GetDirectionFromBitfield(u8 bitfield)
+{
+    u8 direction = 0;
+    while (bitfield >>= 1) direction++;
+    return direction;
+}
+
 void FieldClearPlayerInput(struct FieldInput *input)
 {
     input->pressedAButton = FALSE;
@@ -85,6 +94,59 @@ void FieldClearPlayerInput(struct FieldInput *input)
     input->input_field_1_2 = FALSE;
     input->input_field_1_3 = FALSE;
     input->dpadDirection = 0;
+}
+
+static void SetDirectionFromHeldKeys(u16 heldKeys)
+{
+    u8 dpadDirections = 0;
+
+    if (heldKeys & DPAD_UP)
+        dpadDirections |= (1 << DIR_NORTH);
+    if (heldKeys & DPAD_DOWN)
+        dpadDirections |= (1 << DIR_SOUTH);
+    if (heldKeys & DPAD_LEFT)
+        dpadDirections |= (1 << DIR_WEST);
+    if (heldKeys & DPAD_RIGHT)
+        dpadDirections |= (1 << DIR_EAST);
+
+    if (dpadDirections == 0) // no dir is pushed
+    {
+        sCurrentDirection = DIR_NONE;
+        sPreviousDirection = DIR_NONE;
+        return;
+    }
+
+    if ((dpadDirections & (dpadDirections - 1)) == 0) // only 1 dir is pushed
+    {
+        // simply set currDir to that dir
+        sCurrentDirection = GetDirectionFromBitfield(dpadDirections);
+        sPreviousDirection = DIR_NONE;
+        return;
+    }
+
+    // Check for diagonal movement
+    if (dpadDirections & (1 << DIR_NORTH) && dpadDirections & (1 << DIR_EAST))
+        sCurrentDirection = DIR_NORTHEAST;
+    else if (dpadDirections & (1 << DIR_NORTH) && dpadDirections & (1 << DIR_WEST))
+        sCurrentDirection = DIR_NORTHWEST;
+    else if (dpadDirections & (1 << DIR_SOUTH) && dpadDirections & (1 << DIR_EAST))
+        sCurrentDirection = DIR_SOUTHEAST;
+    else if (dpadDirections & (1 << DIR_SOUTH) && dpadDirections & (1 << DIR_WEST))
+        sCurrentDirection = DIR_SOUTHWEST;
+    
+    else if (((dpadDirections >> sCurrentDirection) & 1) == 0) // none of the multiple dirs pushed is currDir
+    {
+        sCurrentDirection = DIR_NONE;
+        sPreviousDirection = DIR_NONE;
+    }
+    else if ((sPreviousDirection == DIR_NONE) || (((dpadDirections >> sPreviousDirection) & 1) == 0))
+    {
+        // turn
+        sCurrentDirection = GetDirectionFromBitfield(dpadDirections & ~(1 << sCurrentDirection));
+        sPreviousDirection = sCurrentDirection;
+    }
+    // else, currDir and prevDir are the dirs pushed
+    // do nothing (keep the same currDir and prevDir)
 }
 
 void FieldGetPlayerInput(struct FieldInput *input, u16 newKeys, u16 heldKeys)
@@ -122,27 +184,8 @@ void FieldGetPlayerInput(struct FieldInput *input, u16 newKeys, u16 heldKeys)
             input->checkStandardWildEncounter = TRUE;
     }
 
-    if (heldKeys & DPAD_UP) {
-        if (heldKeys & DPAD_LEFT)
-            input->dpadDirection = DIR_NORTHWEST;
-        else if (heldKeys & DPAD_RIGHT)
-            input->dpadDirection = DIR_NORTHEAST;
-        else
-            input->dpadDirection = DIR_NORTH;
-    }
-    else if (heldKeys & DPAD_DOWN) {
-        if (heldKeys & DPAD_LEFT)
-            input->dpadDirection = DIR_SOUTHWEST;
-        else if (heldKeys & DPAD_RIGHT)
-            input->dpadDirection = DIR_SOUTHEAST;
-        else
-            input->dpadDirection = DIR_SOUTH;
-    }
-    else if (heldKeys & DPAD_LEFT)
-        input->dpadDirection = DIR_WEST;
-    else if (heldKeys & DPAD_RIGHT)
-        input->dpadDirection = DIR_EAST;
-
+    SetDirectionFromHeldKeys(heldKeys);
+    input->dpadDirection = sCurrentDirection;
 }
 
 int ProcessPlayerFieldInput(struct FieldInput *input)
