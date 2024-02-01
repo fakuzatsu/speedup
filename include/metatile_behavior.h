@@ -149,4 +149,13 @@ bool8 MetatileBehavior_IsLongGrass_Duplicate(u8);
 bool8 MetatileBehavior_IsLongGrassSouthEdge(u8);
 bool8 MetatileBehavior_IsTrainerHillTimer(u8);
 
+bool8 MetatileBehavior_IsNortheastArrowWarp(u8 metatileBehavior);
+bool8 MetatileBehavior_IsNorthwestArrowWarp(u8 metatileBehavior);
+bool8 MetatileBehavior_IsSoutheastArrowWarp(u8 metatileBehavior);
+bool8 MetatileBehavior_IsSouthwestArrowWarp(u8 metatileBehavior);
+bool8 MetatileBehavior_IsNortheastBlocked(u8);
+bool8 MetatileBehavior_IsNorthwestBlocked(u8);
+bool8 MetatileBehavior_IsSoutheastBlocked(u8);
+bool8 MetatileBehavior_IsSouthwestBlocked(u8);
+
 #endif // GUARD_METATILE_BEHAVIOR_H
