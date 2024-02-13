@@ -785,8 +785,46 @@ static bool8 CanStopSurfing(s16 x, s16 y, u8 direction)
 
 static bool8 ShouldJumpLedge(s16 x, s16 y, u8 direction)
 {
-    if (GetLedgeJumpDirection(x, y, direction) != DIR_NONE)
-        return TRUE;
+    static bool8 (*const ledgeBehaviorFuncs[])(u8) = {
+        [DIR_SOUTH - 1] = MetatileBehavior_IsJumpSouth,
+        [DIR_NORTH - 1] = MetatileBehavior_IsJumpNorth,
+        [DIR_WEST - 1]  = MetatileBehavior_IsJumpWest,
+        [DIR_EAST - 1]  = MetatileBehavior_IsJumpEast,
+    };
+
+    static bool8 (*const diagonalLedgeBehaviorFuncs[][3])(u8) = {
+        [DIR_SOUTHWEST - DIR_SOUTHWEST] = {
+            MetatileBehavior_IsJumpSouth,
+            MetatileBehavior_IsJumpWest,
+            MetatileBehavior_IsJumpSouthwest,
+        },
+        [DIR_SOUTHEAST - DIR_SOUTHWEST] = {
+            MetatileBehavior_IsJumpSouth,
+            MetatileBehavior_IsJumpEast,
+            MetatileBehavior_IsJumpSoutheast,
+        },
+        [DIR_NORTHWEST - DIR_SOUTHWEST] = {
+            MetatileBehavior_IsJumpNorth,
+            MetatileBehavior_IsJumpWest,
+            MetatileBehavior_IsJumpNorthwest,
+        },
+        [DIR_NORTHEAST - DIR_SOUTHWEST] = {
+            MetatileBehavior_IsJumpNorth,
+            MetatileBehavior_IsJumpEast,
+            MetatileBehavior_IsJumpNortheast,
+        },
+    };
+
+    u8 behavior = MapGridGetMetatileBehaviorAt(x, y);
+
+    if (direction == DIR_NONE)
+        return FALSE;
+    else if (direction <= DIR_EAST)
+        return ledgeBehaviorFuncs[direction - 1](behavior);
+    else if (direction <= DIR_NORTHEAST)
+        return diagonalLedgeBehaviorFuncs[direction - DIR_SOUTHWEST][0](behavior)
+            || diagonalLedgeBehaviorFuncs[direction - DIR_SOUTHWEST][1](behavior)
+            || diagonalLedgeBehaviorFuncs[direction - DIR_SOUTHWEST][2](behavior);
     else
         return FALSE;
 }
@@ -963,8 +1001,10 @@ static bool8 PlayerAnimIsMultiFrameStationary(void)
     u8 movementActionId = gObjectEvents[gPlayerAvatar.objectEventId].movementActionId;
 
     if (movementActionId <= MOVEMENT_ACTION_FACE_RIGHT
+     || (movementActionId >= MOVEMENT_ACTION_FACE_SOUTHWEST && movementActionId <= MOVEMENT_ACTION_FACE_NORTHEAST)
      || (movementActionId >= MOVEMENT_ACTION_DELAY_1 && movementActionId <= MOVEMENT_ACTION_DELAY_16)
      || (movementActionId >= MOVEMENT_ACTION_WALK_IN_PLACE_SLOW_DOWN && movementActionId <= MOVEMENT_ACTION_WALK_IN_PLACE_FASTER_RIGHT)
+     || (movementActionId >= MOVEMENT_ACTION_WALK_IN_PLACE_SLOW_SOUTHWEST && movementActionId <= MOVEMENT_ACTION_WALK_IN_PLACE_FASTEST_NORTHEAST)
      || (movementActionId >= MOVEMENT_ACTION_ACRO_WHEELIE_FACE_DOWN && movementActionId <= MOVEMENT_ACTION_ACRO_END_WHEELIE_FACE_RIGHT)
      || (movementActionId >= MOVEMENT_ACTION_ACRO_WHEELIE_IN_PLACE_DOWN && movementActionId <= MOVEMENT_ACTION_ACRO_WHEELIE_IN_PLACE_RIGHT))
         return TRUE;
@@ -2403,14 +2443,14 @@ static u8 CheckForCollision(s16 x, s16 y, u8 direction)
         case COLLISION_ELEVATION_MISMATCH:
             return TRUE;
         case COLLISION_OBJECT_EVENT:
-            return FALSE;
+            return TRUE;
         //If using my Surfboard code, uncomment
         //case COLLISION_START_SURFING:
         //    return FALSE;
         //case COLLISION_STOP_SURFING:
         //    return FALSE;
         case COLLISION_LEDGE_JUMP:
-            return FALSE;
+            return TRUE;
         case COLLISION_PUSHED_BOULDER:
             return TRUE;
         case COLLISION_ROTATING_GATE:
