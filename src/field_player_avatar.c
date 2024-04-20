@@ -620,6 +620,7 @@ static void PlayerNotOnBikeTurningInPlace(u8 direction, u16 heldKeys)
 static void PlayerNotOnBikeMoving(u8 direction, u16 heldKeys)
 {
     u8 collision = CheckForPlayerAvatarCollision(direction);
+    u8 grindRunDirection;
     bool8 isRunning = FALSE;
 
     if (collision)
@@ -645,7 +646,6 @@ static void PlayerNotOnBikeMoving(u8 direction, u16 heldKeys)
                 && IsRunningDisallowed(gObjectEvents[gPlayerAvatar.objectEventId].currentMetatileBehavior) == 0)
                 isRunning = TRUE;
                 //Check for empty spaces next to and diagonally from the player, otherwise actually collide
-                u8 grindRunDirection;
                 grindRunDirection = GetGrindRunDirection(direction);
                 if(grindRunDirection != DIR_NONE)
                 {
