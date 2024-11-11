@@ -1860,6 +1860,11 @@ static void CB2_HandleStartMultiBattle(void)
 
 void BattleMainCB2(void)
 {
+    /* If using Rogue's animation speedup, replace this 
+    statement with the call to Rogue_GetBattleSpeedScale */
+    if (InBattleChoosingMoves())
+        gBattleStruct->hasBattleInputStarted = TRUE;
+
     AnimateSprites();
     BuildOamBuffer();
     RunTextPrinters();
@@ -3019,6 +3024,11 @@ void BeginBattleIntro(void)
     BattleStartClearSetData();
     gBattleCommunication[1] = 0;
     gBattleMainFunc = BattleIntroGetMonsData;
+}
+
+bool32 InBattleChoosingMoves(void)
+{
+    return gBattleMainFunc == HandleTurnActionSelectionState;
 }
 
 static void BattleMainCB1(void)

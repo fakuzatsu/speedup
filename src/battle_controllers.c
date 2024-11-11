@@ -1513,3 +1513,10 @@ void BtlController_EmitEndLinkBattle(u8 bufferId, u8 battleOutcome)
     sBattleBuffersTransferData[5] = sBattleBuffersTransferData[4] = RecordedBattle_BufferNewBattlerData(&sBattleBuffersTransferData[6]);
     PrepareBufferDataTransfer(bufferId, sBattleBuffersTransferData, sBattleBuffersTransferData[4] + 6);
 }
+
+bool32 BattleDialogIsActive(void)
+{
+    if (gMain.inBattle && !gBattleStruct->hasBattleInputStarted)
+        return TRUE;
+    return FALSE;
+}

@@ -5390,6 +5390,7 @@ static void Cmd_yesnoboxlearnmove(void)
     case 0:
         HandleBattleWindow(YESNOBOX_X_Y, 0);
         BattlePutTextOnWindow(gText_BattleYesNoChoice, B_WIN_YESNO);
+        gBattleStruct->hasBattleInputStarted = TRUE;
         gBattleScripting.learnMoveState++;
         gBattleCommunication[CURSOR_POSITION] = 0;
         BattleCreateYesNoCursorAt(0);
@@ -5486,6 +5487,7 @@ static void Cmd_yesnoboxlearnmove(void)
         break;
     case 5:
         HandleBattleWindow(YESNOBOX_X_Y, WINDOW_CLEAR);
+        gBattleStruct->hasBattleInputStarted = FALSE;
         gBattlescriptCurrInstr += 5;
         break;
     case 6:
@@ -5504,6 +5506,7 @@ static void Cmd_yesnoboxstoplearningmove(void)
     case 0:
         HandleBattleWindow(YESNOBOX_X_Y, 0);
         BattlePutTextOnWindow(gText_BattleYesNoChoice, B_WIN_YESNO);
+        gBattleStruct->hasBattleInputStarted = TRUE;
         gBattleScripting.learnMoveState++;
         gBattleCommunication[CURSOR_POSITION] = 0;
         BattleCreateYesNoCursorAt(0);
@@ -5526,6 +5529,7 @@ static void Cmd_yesnoboxstoplearningmove(void)
         if (JOY_NEW(A_BUTTON))
         {
             PlaySE(SE_SELECT);
+            gBattleStruct->hasBattleInputStarted = FALSE;
 
             if (gBattleCommunication[1] != 0)
                 gBattlescriptCurrInstr = T1_READ_PTR(gBattlescriptCurrInstr + 1);
@@ -5537,6 +5541,7 @@ static void Cmd_yesnoboxstoplearningmove(void)
         else if (JOY_NEW(B_BUTTON))
         {
             PlaySE(SE_SELECT);
+            gBattleStruct->hasBattleInputStarted = FALSE;
             gBattlescriptCurrInstr = T1_READ_PTR(gBattlescriptCurrInstr + 1);
             HandleBattleWindow(YESNOBOX_X_Y, WINDOW_CLEAR);
         }
@@ -5800,6 +5805,7 @@ static void Cmd_yesnobox(void)
     case 0:
         HandleBattleWindow(YESNOBOX_X_Y, 0);
         BattlePutTextOnWindow(gText_BattleYesNoChoice, B_WIN_YESNO);
+        gBattleStruct->hasBattleInputStarted = TRUE;
         gBattleCommunication[0]++;
         gBattleCommunication[CURSOR_POSITION] = 0;
         BattleCreateYesNoCursorAt(0);
@@ -5823,12 +5829,14 @@ static void Cmd_yesnobox(void)
         {
             gBattleCommunication[CURSOR_POSITION] = 1;
             PlaySE(SE_SELECT);
+            gBattleStruct->hasBattleInputStarted = FALSE;
             HandleBattleWindow(YESNOBOX_X_Y, WINDOW_CLEAR);
             gBattlescriptCurrInstr++;
         }
         else if (JOY_NEW(A_BUTTON))
         {
             PlaySE(SE_SELECT);
+            gBattleStruct->hasBattleInputStarted = FALSE;
             HandleBattleWindow(YESNOBOX_X_Y, WINDOW_CLEAR);
             gBattlescriptCurrInstr++;
         }

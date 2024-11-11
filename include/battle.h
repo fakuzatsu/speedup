@@ -352,7 +352,7 @@ struct BattleStruct
 {
     u8 turnEffectsTracker;
     u8 turnEffectsBattlerId;
-    u8 unused_0;
+    u8 hasBattleInputStarted;
     u8 turnCountersTracker;
     u8 wrappedMove[MAX_BATTLERS_COUNT * 2]; // Leftover from Ruby's ewram access.
     u8 moveTarget[MAX_BATTLERS_COUNT];

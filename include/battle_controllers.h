@@ -280,4 +280,7 @@ void SetControllerToLinkOpponent(void);
 // link partner
 void SetControllerToLinkPartner(void);
 
+// Turbo A during battle dialog
+bool32 BattleDialogIsActive(void);
+
 #endif // GUARD_BATTLE_CONTROLLERS_H

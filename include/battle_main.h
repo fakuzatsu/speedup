@@ -76,6 +76,7 @@ void RunBattleScriptCommands_PopCallbacksStack(void);
 void RunBattleScriptCommands(void);
 bool8 TryRunFromBattle(u8 battlerId);
 void SpecialStatusesClear(void);
+bool32 InBattleChoosingMoves(void);
 
 extern struct MultiPartnerMenuPokemon gMultiPartnerParty[MULTI_PARTY_SIZE];
 
