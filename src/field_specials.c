@@ -515,7 +515,7 @@ void SpawnLinkPartnerObjectEvent(void)
     u8 i;
 
     myLinkPlayerNumber = GetMultiplayerId();
-    playerFacingDirection = GetPlayerFacingDirection();
+    playerFacingDirection = GetPlayerFacingDirectionNonDiagonal();
     switch (playerFacingDirection)
     {
     case DIR_WEST:
@@ -1013,7 +1013,7 @@ static void PCTurnOnEffect(struct Task *task)
         task->tTimer = 0;
 
         // Get where the PC should be, depending on where the player is looking.
-        playerDirection = GetPlayerFacingDirection();
+        playerDirection = GetPlayerFacingDirectionNonDiagonal();
         switch (playerDirection)
         {
         case DIR_NORTH:
@@ -1082,7 +1082,7 @@ static void PCTurnOffEffect(void)
     u16 metatileId = 0;
 
     // Get where the PC should be, depending on where the player is looking.
-    u8 playerDirection = GetPlayerFacingDirection();
+    u8 playerDirection = GetPlayerFacingDirectionNonDiagonal();
     switch (playerDirection)
     {
     case DIR_NORTH:
